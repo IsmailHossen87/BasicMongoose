@@ -1,3 +1,5 @@
+import { Model } from "mongoose"
+
 // for address
 export interface address {
     PresentAddress:string,
@@ -11,5 +13,15 @@ export interface UserInfo{
     address:address,
     phoneNumber:number,
     isActive:boolean,
+    password:string,
     role:string
+}
+
+
+// export interface userInstanceMethods {
+//     hashPassword(password:string):string
+// }
+
+export interface UserStaticMethod extends Model<UserInfo> {
+    hashPassword(password:string) : string
 }

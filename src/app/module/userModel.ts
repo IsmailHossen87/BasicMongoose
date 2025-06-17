@@ -1,6 +1,7 @@
-import { UserInfo, address } from "./../interface/userInterface";
-import { model, Schema } from "mongoose";
-import validator from "validator";
+import { UserInfo, address, UserStaticMethod } from "./../interface/userInterface";
+import {  model, Schema } from "mongoose";
+import validator from "validator"; 
+import bcrypt from "bcryptjs";
 // For address Schema
 const addressSchema = new Schema<address>(
   {
@@ -14,7 +15,7 @@ const addressSchema = new Schema<address>(
 );
 // For user Schema
 
-const userSchema = new Schema<UserInfo>(
+const userSchema = new Schema<UserInfo,UserStaticMethod>(
   {
     userName: {
          type: String,
@@ -35,6 +36,7 @@ const userSchema = new Schema<UserInfo>(
       type: Number,
       // validate: [validator.isMobilePhone, "Invalid Phobe Number {VALUE}"],
     },
+    password:{type:String},
     role: {
       type: String,
       trim: true,
@@ -51,4 +53,15 @@ const userSchema = new Schema<UserInfo>(
     versionKey: false,
   }
 );
-export const User = model("User", userSchema);
+// userSchema.method("hashPassword",async function updatePassword(PlainPassword:string){
+//  const password = await bcrypt.hash(PlainPassword,10)
+//  return password
+// })
+
+userSchema.static("hashPassword",async function hashPassword(PlainPassword:string) {
+  const password = await bcrypt.hash(PlainPassword,10)
+  return password
+} )
+
+export const User = model<UserInfo,UserStaticMethod>("User", userSchema);
+
