@@ -12,6 +12,15 @@ productRouter.post("/create",async(req:Request,res:Response)=>{
         data:productInfo
     })
 })
+// get
+productRouter.get("/alldata",async(req:Request,res:Response)=>{
+    const product = await Product.find().populate("user")
+    res.status(201).json({
+        Sucess:true,
+        messege:"Products All data Sucessfully",
+        data:product
+    })
+})
 // update
 productRouter.patch("/update/:id",async(req:Request,res:Response)=>{
     const {id} = req.params 
