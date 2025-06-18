@@ -1,5 +1,6 @@
 import { Model } from "mongoose"
 
+
 // for address
 export interface address {
     PresentAddress:string,

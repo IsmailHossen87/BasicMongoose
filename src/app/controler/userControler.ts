@@ -22,10 +22,8 @@ const createUserZod = z.object({
 userRoute.post("/create", async (req: Request, res: Response) => {
   try {
     const info = await createUserZod.parse(req.body);
-    const tempUser = new User(info);
-    tempUser.password =await User.hashPassword(info.password)
-   const userInfo =  await tempUser.save()
-
+    // const body = req.body
+    const userInfo = await User.create(info)
 
     res.status(201).json({
       Sucess: true,
@@ -79,3 +77,14 @@ userRoute.patch("/update/:id", async (req: Request, res: Response) => {
     data: userInfo,
   });
 });
+
+// delete
+userRoute.delete("/delete/:id",async(req:Request,res:Response)=>{
+    const {id} = req.params 
+    const userDelete = await User.findOneAndDelete({_id:id})
+    res.status(201).json({
+        Sucess:true,
+        messege:"Users  data deleted Sucessfully",
+        data:userDelete
+    })
+})

@@ -32,3 +32,13 @@ productRouter.patch("/update/:id",async(req:Request,res:Response)=>{
         data:productInfo
     })
 })
+// delete
+productRouter.delete("/delete/:id",async(req:Request,res:Response)=>{
+    const {id} = req.params 
+    const userDelete = await Product.findOneAndDelete({_id:id})
+    res.status(201).json({
+        Sucess:true,
+        messege:"Product update data Sucessfully",
+        data:userDelete
+    })
+})

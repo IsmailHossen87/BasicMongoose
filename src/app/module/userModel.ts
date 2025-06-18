@@ -2,6 +2,7 @@ import { UserInfo, address, UserStaticMethod } from "./../interface/userInterfac
 import {  model, Schema } from "mongoose";
 import validator from "validator"; 
 import bcrypt from "bcryptjs";
+import { Product } from "./productModel";
 // For address Schema
 const addressSchema = new Schema<address>(
   {
@@ -58,10 +59,24 @@ const userSchema = new Schema<UserInfo,UserStaticMethod>(
 //  return password
 // })
 
-userSchema.static("hashPassword",async function hashPassword(PlainPassword:string) {
-  const password = await bcrypt.hash(PlainPassword,10)
-  return password
-} )
+// userSchema.static("hashPassword",async function hashPassword(PlainPassword:string) {
+//   const password = await bcrypt.hash(PlainPassword,10)
+//   return password
+// } )
 
+userSchema.pre("save", async function(next){ 
+  const password = await bcrypt.hash(this.password,10)
+  console.log(password,"this.password")
+  this.password = password
+  next()
+}) 
+
+userSchema.post("findOneAndDelete",async function(doc,next){
+  if(doc){
+    await Product.deleteMany({user:doc._id})
+    console.log({user:doc._id})
+    next()
+  }
+})
 export const User = model<UserInfo,UserStaticMethod>("User", userSchema);
 
